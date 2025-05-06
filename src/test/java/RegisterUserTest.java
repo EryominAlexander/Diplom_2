@@ -1,7 +1,5 @@
 import static data.StellarBurgersData.*;
 import static io.restassured.RestAssured.given;
-
-import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import json.CreatedUserData;
