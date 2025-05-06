@@ -8,4 +8,5 @@ public class StellarBurgersData {
 
     public static final String USER_ALREADY_EXISTS = "User already exists";
     public static final String NO_REQUIRED_PARAM_FOR_CREATE_USER = "Email, password and name are required fields";
+    public static final String LOGIN_WITH_WRONG_CRED = "email or password are incorrect";
 }
