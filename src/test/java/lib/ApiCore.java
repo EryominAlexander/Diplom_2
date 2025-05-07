@@ -5,8 +5,6 @@ import io.restassured.response.Response;
 import json.CreatedUserData;
 import json.LoginData;
 import json.UserData;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -134,5 +132,32 @@ public class ApiCore {
                 .and().assertThat().body("message", equalTo(CREATE_ORDER_WITH_WITH_OUT_ID))
                 .and().statusCode(400);
     }
-
+    @Step("Получение заказа конкретного пользователя GET /api/orders")
+    public Response getUserOrders(String token){
+        return given()
+                .header("Content-Type", "application/json")
+                .and()
+                .header("Authorization", token)
+                .when()
+                .get(GET_USER_ORDERS);
+    }
+    @Step("Проверка ответа GET /api/orders. Негативный ответ. Без авторизации")
+    public void checkNegativeResponseGetUserOrders(Response response){
+        response.then().assertThat().body("success", equalTo(false))
+                .and().assertThat().body("message", equalTo(EDIT_USER_WITH_OUT_AUTH))
+                .and().statusCode(401);
+    }
+    @Step("Проверка ответа GET /api/orders. Позитивный ответ. Без")
+    public void checkResponseGetUserOrders(Response response){
+        response.then().assertThat().body("success", equalTo(true))
+                .and().assertThat().body("total", notNullValue())
+                .and().assertThat().body("totalToday", notNullValue())
+                .and().assertThat().body("orders[0].ingredients[0]", notNullValue())
+                .and().assertThat().body("orders[0]._id", notNullValue())
+                .and().assertThat().body("orders[0].status", notNullValue())
+                .and().assertThat().body("orders[0].number", notNullValue())
+                .and().assertThat().body("orders[0].createdAt", notNullValue())
+                .and().assertThat().body("orders[0].updatedAt", notNullValue())
+                .and().statusCode(200);
+    }
 }
