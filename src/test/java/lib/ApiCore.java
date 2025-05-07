@@ -7,6 +7,7 @@ import json.LoginData;
 import json.UserData;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -101,4 +102,37 @@ public class ApiCore {
                 .and().assertThat().body("message", equalTo(EDIT_USER_WITH_OUT_AUTH))
                 .and().statusCode(401);
     }
+
+    @Step("Создание заказа POST /api/orders")
+    public Response createOrder(Map<String, List<String>> data, String token){
+        return given()
+                .header("Content-Type", "application/json")
+                .and()
+                .and()
+                .header("Authorization", token )
+                .body(data)
+                .when()
+                .post(POST_CREATE_ORDER);
+    }
+
+    @Step("Проверка ответа POST /api/orders. Позитивный ответ")
+    public void checkResponseCreateOrder(Response response){
+        response.then().assertThat().body("success", equalTo(true))
+                .and().assertThat().body("name", notNullValue())
+                .and().assertThat().body("order.number", notNullValue())
+                .and().statusCode(200);
+    }
+    @Step("Проверка ответа POST /api/orders. Негативный ответ. Несуществующий id ингредиета")
+    public void checkNegativeResponseCreateOrderWrongId(Response response){
+        response.then().assertThat().body("success", equalTo(false))
+                .and().assertThat().body("message", equalTo(CREATE_ORDER_WITH_WRONG_ID))
+                .and().statusCode(400);
+    }
+    @Step("Проверка ответа POST /api/orders. Негативный ответ. Не передан Id ингредиента")
+    public void checkNegativeResponseCreateOrderWithOutId(Response response){
+        response.then().assertThat().body("success", equalTo(false))
+                .and().assertThat().body("message", equalTo(CREATE_ORDER_WITH_WITH_OUT_ID))
+                .and().statusCode(400);
+    }
+
 }
