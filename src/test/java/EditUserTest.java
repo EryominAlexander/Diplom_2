@@ -1,3 +1,6 @@
+import com.github.javafaker.Faker;
+import com.github.javafaker.service.FakeValuesService;
+import com.github.javafaker.service.RandomService;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import json.CreatedUserData;
@@ -9,8 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static data.StellarBurgersData.*;
 import static io.restassured.RestAssured.given;
@@ -25,8 +31,13 @@ public class EditUserTest {
     public void setUp(){
         RestAssured.baseURI = BASE_URL;
         Random random = new Random();
-        testEmail = "testEmail" + random.nextInt(1000000) + "@yandex.ru";
-        testName = "testName" + random.nextInt(1000000);
+        Faker faker = new Faker();
+
+        FakeValuesService fakeValuesService = new FakeValuesService(
+                new Locale("en-GB"), new RandomService());
+        testEmail = fakeValuesService.bothify("????##@yandex.ru");
+        Matcher emailMatcher = Pattern.compile("\\w{8}\\d{3}@yandex.ru").matcher(testEmail);
+        testName = faker.name().firstName();
         testPassword = "testPassword" + random.nextInt(1000000);
     }
 

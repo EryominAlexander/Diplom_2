@@ -8,6 +8,7 @@ public class StellarBurgersData {
     public static final String PATCH_EDIT_USER = "/api/auth/user";
     public static final String POST_CREATE_ORDER = "/api/orders";
     public static final String GET_USER_ORDERS = "/api/orders";
+    public static final String GET_INGREDIENTS = "/api/ingredients";
 
     public static final String USER_ALREADY_EXISTS = "User already exists";
     public static final String NO_REQUIRED_PARAM_FOR_CREATE_USER = "Email, password and name are required fields";

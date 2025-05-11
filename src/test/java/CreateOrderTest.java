@@ -1,3 +1,6 @@
+import com.github.javafaker.Faker;
+import com.github.javafaker.service.FakeValuesService;
+import com.github.javafaker.service.RandomService;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import json.*;
@@ -7,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static data.StellarBurgersData.*;
 import static io.restassured.RestAssured.given;
@@ -20,8 +25,13 @@ public class CreateOrderTest {
     public void setUp() {
         RestAssured.baseURI = BASE_URL;
         Random random = new Random();
-        testEmail = "testEmail" + random.nextInt(1000000) + "@yandex.ru";
-        testName = "testName" + random.nextInt(1000000);
+        Faker faker = new Faker();
+
+        FakeValuesService fakeValuesService = new FakeValuesService(
+                new Locale("en-GB"), new RandomService());
+        testEmail = fakeValuesService.bothify("????##@yandex.ru");
+        Matcher emailMatcher = Pattern.compile("\\w{8}\\d{3}@yandex.ru").matcher(testEmail);
+        testName = faker.name().firstName();
         testPassword = "testPassword" + random.nextInt(1000000);
     }
     @Test
@@ -32,8 +42,8 @@ public class CreateOrderTest {
         Response createUserResponse = apiCore.postCreateUser( userData );
         String token = apiCore.getToken(testEmail, testPassword);
 
-        List<String> idList = new ArrayList<>();
-        idList.add("61c0c5a71d1f82001bdaaa6d");
+        List<String> idList = apiCore.getIngredients(1);
+
         Map<String, List<String>> ingredients = new HashMap<>();
         ingredients.put("ingredients", idList );
 
@@ -63,13 +73,9 @@ public class CreateOrderTest {
         Response createUserResponse = apiCore.postCreateUser( userData );
         String token = apiCore.getToken(testEmail, testPassword);
 
-        List<String> idList = new ArrayList<>();
 
-        idList.add("61c0c5a71d1f82001bdaaa6d");
-        idList.add("61c0c5a71d1f82001bdaaa6f");
-        idList.add("61c0c5a71d1f82001bdaaa70");
-        idList.add("61c0c5a71d1f82001bdaaa72");
-        idList.add("61c0c5a71d1f82001bdaaa6e");
+        List<String> idList = apiCore.getIngredients(5);
+
         Map<String, List<String>> ingredients = new HashMap<>();
         ingredients.put("ingredients", idList );
 
@@ -117,7 +123,6 @@ public class CreateOrderTest {
         String token = apiCore.getToken(testEmail, testPassword);
 
         List<String> idList = new ArrayList<>();
-        //idList.add("61c0c5a71d1f82001bd22a6d");
         Map<String, List<String>> ingredients = new HashMap<>();
         ingredients.put("ingredients", idList );
 
@@ -133,8 +138,7 @@ public class CreateOrderTest {
         Response createUserResponse = apiCore.postCreateUser( userData );
         String token = apiCore.getToken(testEmail, testPassword);
 
-        List<String> idList = new ArrayList<>();
-        idList.add("61c0c5a71d1f82001bdaaa6d");
+        List<String> idList = apiCore.getIngredients(1);
         Map<String, List<String>> ingredients = new HashMap<>();
         ingredients.put("ingredients", idList );
 

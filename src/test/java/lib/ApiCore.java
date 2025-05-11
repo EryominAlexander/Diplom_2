@@ -2,9 +2,9 @@ package lib;
 import static data.StellarBurgersData.*;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
-import json.CreatedUserData;
-import json.LoginData;
-import json.UserData;
+import json.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -159,5 +159,23 @@ public class ApiCore {
                 .and().assertThat().body("orders[0].createdAt", notNullValue())
                 .and().assertThat().body("orders[0].updatedAt", notNullValue())
                 .and().statusCode(200);
+    }
+    @Step("Получение списка ингредиетов GET /api/ingredients")
+    public List<String> getIngredients(int count){
+        IngredientsList ingredientsList = given()
+                .header("Content-Type", "application/json")
+                .and()
+                .get(GET_INGREDIENTS)
+                .as(IngredientsList.class);
+        List<IngredientsData> ingredients = ingredientsList.getData();
+        List<String> idList = new ArrayList<>();
+
+        for (IngredientsData data : ingredients){
+            if(count == 0)break;
+            idList.add(data.get_id());
+            count--;
+        }
+
+        return idList;
     }
 }
